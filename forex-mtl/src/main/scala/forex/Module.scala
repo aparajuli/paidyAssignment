@@ -1,17 +1,21 @@
 package forex
 
-import cats.effect.{ Concurrent, Timer }
+import cats.effect.{Concurrent, Timer}
 import forex.config.ApplicationConfig
 import forex.http.rates.RatesHttpRoutes
 import forex.services._
 import forex.programs._
-import org.http4s._
+import org.http4s.{HttpApp, HttpRoutes, Uri}
+import org.http4s.client.Client
 import org.http4s.implicits._
-import org.http4s.server.middleware.{ AutoSlash, Timeout }
+import org.http4s.server.middleware.{AutoSlash, Timeout}
 
-class Module[F[_]: Concurrent: Timer](config: ApplicationConfig) {
+class Module[F[_]: Concurrent: Timer](config: ApplicationConfig, client: Client[F]) {
 
-  private val ratesService: RatesService[F] = RatesServices.dummy[F]
+  private val baseUrl = Uri.unsafeFromString("http://localhost:8080/rates") // Replace with the actual base URL
+  private val token = "10dc303535874aeccc86a8251e6992f5" // Token for the OneFrame API
+
+  private val ratesService: RatesService[F] = RatesServices.live[F](client, baseUrl, token)
 
   private val ratesProgram: RatesProgram[F] = RatesProgram[F](ratesService)
 
