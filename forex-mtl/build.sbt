@@ -66,5 +66,7 @@ libraryDependencies ++= Seq(
   Libraries.logback,
   Libraries.scalaTest      % Test,
   Libraries.scalaCheck     % Test,
-  Libraries.catsScalaCheck % Test
+  Libraries.catsScalaCheck % Test,
+  "dev.profunktor" %% "redis4cats-effects" % "1.7.1",
+  "dev.profunktor" %% "redis4cats-log4cats" % "1.7.0"
 )

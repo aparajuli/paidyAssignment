@@ -1,6 +1,7 @@
 package forex.domain
 
 import cats.Show
+import io.circe.{Decoder, Encoder}
 
 sealed trait Currency
 
@@ -37,6 +38,9 @@ object Currency {
     case "JPY" => JPY
     case "SGD" => SGD
     case "USD" => USD
+    case _ => throw new IllegalArgumentException(s"Unknown currency code: $s")
   }
 
+  implicit val currencyDecoder: Decoder[Currency] = Decoder.decodeString.map(fromString)
+  implicit val currencyEncoder: Encoder[Currency] = Encoder.encodeString.contramap[Currency](show.show)
 }
